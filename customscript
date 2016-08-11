@@ -1,0 +1,2 @@
+#!/bin/bash
+echo hostname;date;uptime >> /tmp/$HOSTNAME.txt
