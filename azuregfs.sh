@@ -252,7 +252,7 @@ install_glusterfs_centos() {
     
     echo "installing gluster"
     yum -y update
-    yum install centos-release-gluster
+    yum -y install centos-release-gluster
     yum -y install glusterfs-cli glusterfs-geo-replication glusterfs-fuse glusterfs-server glusterfs
 }
 
