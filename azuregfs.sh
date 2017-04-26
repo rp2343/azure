@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# This script is only tested on CentOS 6.5
+# This script is only tested on CentOS 7.3
 # You can customize variables such as MOUNTPOINT, RAIDCHUNKSIZE and so on to your needs.
 # You can also customize it to work with other Linux flavours and versions.
 # If you customize it, copy it to either Azure blob storage or Github so that Azure
@@ -154,14 +154,16 @@ open_ports() {
     index=0
     while [ $index -lt $NODECOUNT ]; do
         if [ $index -ne $NODEINDEX ]; then
-            iptables -I INPUT -p all -s "${PEERNODEIPPREFIX}${index}" -j ACCEPT
+            systemctl enable firewalld
+	    systemctl start firewalld
+            firewall-cmd --zone=public --add-rich-rule='rule family="ipv4" source address="${PEERNODEIPPREFIX}${index}" accept'   	
             echo "${PEERNODEIPPREFIX}${index}    ${PEERNODEPREFIX}${index}" >> /etc/hosts
         else
             echo "127.0.0.1    ${PEERNODEPREFIX}${index}" >> /etc/hosts
         fi
         let index++
     done
-    iptables-save
+    firewall-cmd --reload
 }
 
 disable_apparmor_ubuntu() {
@@ -244,9 +246,9 @@ install_glusterfs_centos() {
     if [ ! -e /etc/yum.repos.d/epel.repo ];
     then
         echo "Installing extra packages for enterprise linux"
-        wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm
-        rpm -Uvh ./epel-release-latest-6*.rpm
-        rm ./epel-release-latest-6*.rpm
+        wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+        rpm -Uvh ./epel-release-latest-7*.rpm
+        rm ./epel-release-latest-7*.rpm
         yum -y update
     fi
     
@@ -259,12 +261,13 @@ install_glusterfs_centos() {
 configure_gluster() {
     if [ $iscentos -eq 0 ];
     then
-        /etc/init.d/glusterd status
+        systemctl status glusterd
         if [ ${?} -ne 0 ];
         then
             install_glusterfs_centos
         fi
-        /etc/init.d/glusterd start        
+        systemctl enable glusterd
+        systemctl start glusterd        
     elif [ $isubuntu -eq 0 ];
     then
         /etc/init.d/glusterfs-server status
@@ -334,7 +337,7 @@ allow_passwordssh() {
     sed -i "s/^PasswordAuthentication no.*/PasswordAuthentication yes/I" /etc/ssh/sshd_config
     if [ $iscentos -eq 0 ];
     then
-        /etc/init.d/sshd reload
+	systemctl reload sshd
     elif [ $isubuntu -eq 0 ];
     then
         /etc/init.d/ssh reload

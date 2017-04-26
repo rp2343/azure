@@ -2,20 +2,17 @@
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "storageAccountName": {
-      "value": "rpatilgfstore"
-    },
     "virtualNetworkName": {
-      "value": "testVnet"
+      "value": "gfsVnet"
     },
     "adminUserName": {
-      "value": "username"
+      "value": "testuser"
     },
     "adminPassword": {
-      "value": "Microsoft1234$Welcome4U"
+      "value": "Microsoft1234$"
     },
     "vmNamePrefix": {
-      "value": "testVM"
+      "value": "gfsvm"
     }
   }
 }
