@@ -1,0 +1,89 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "adminUsername": {
+      "type": "string"
+    },
+    "adminPassword": {
+      "type": "string"
+    }
+  },
+  "variables": {
+    "vnetId": "[resourceId('commonInfra', 'Microsoft.Network/virtualNetworks', 'locustnet1')]",
+    "subnet1Ref": "[concat(variables('vnetId'),'/subnets/','locustsubnet1')]"
+    },
+  "resources": [
+    {
+      "type": "Microsoft.Compute/virtualMachineScaleSets",
+      "name": "myScaleSet3",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2017-03-30",
+      "sku": {
+        "name": "Standard_F1",
+        "capacity": 10
+      },
+      "properties": {
+        "singlePlacementGroup": false,
+        "upgradePolicy": {
+          "mode": "Manual"
+        },
+        "virtualMachineProfile": {
+          "storageProfile": {
+            "imageReference": {
+              "publisher": "Canonical",
+              "offer": "UbuntuServer",
+              "sku": "16.04-LTS",
+              "version": "latest"
+            }
+          },
+          "osProfile": {
+            "computerNamePrefix": "vm",
+            "adminUsername": "[parameters('adminUsername')]",
+            "adminPassword": "[parameters('adminPassword')]"
+          },
+          "networkProfile": {
+            "networkInterfaceConfigurations": [
+              {
+                "name": "myNic",
+                "properties": {
+                  "primary": "true",
+                  "ipConfigurations": [
+                    {
+                      "name": "myIpConfig",
+                      "properties": {
+                        "publicIPAddressConfiguration": {
+                          "name": "rakeshpub1"
+                        },
+                        "subnet": {
+                          "id": "[variables('subnet1Ref')]"
+                        }
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+         },
+         "extensionProfile": {
+           "extensions": [
+             {
+            "name": "CustomExtension",
+             "properties": {
+             "publisher": "Microsoft.Azure.Extensions",
+             "type": "CustomScript",
+             "typeHandlerVersion": "2.0",
+             "autoUpgradeMinorVersion": true,
+             "settings": {
+             "commandToExecute": "sudo mkdir -p /mnt/remotedata && sudo mount -t cifs //locustdata.file.core.windows.net/ldatafiles /mnt/remotedata -o vers=3.0,username=locustdata,password=0TOFSr4GiV3ZcaFENFuPutSaXK8PxD1GicjAhMVN8Za+ZVLcOsshmoc1DjQLDZNkGaH1DZbdPxTUQ7k+LKXquA==,dir_mode=0777,file_mode=0777 && sudo /mnt/remotedata/setup/setup.sh"
+             }
+          }
+         }
+        ]
+       }
+     }
+      }
+   }
+ ]
+}
+
