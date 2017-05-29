@@ -157,6 +157,7 @@ open_ports() {
             systemctl enable firewalld
 	    systemctl start firewalld
             firewall-cmd --zone=public --add-rich-rule='rule family="ipv4" source address="${PEERNODEIPPREFIX}${index}" accept'   	
+	    firewall-cmd --zone=public --add-port=24007-24008/tcp --permanent
             echo "${PEERNODEIPPREFIX}${index}    ${PEERNODEPREFIX}${index}" >> /etc/hosts
         else
             echo "127.0.0.1    ${PEERNODEPREFIX}${index}" >> /etc/hosts
