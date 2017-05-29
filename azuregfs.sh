@@ -279,7 +279,7 @@ configure_gluster() {
     fi
 
     GLUSTERDIR="${MOUNTPOINT}/brick"
-    ls "${GLUSTERDIR}"
+    ls "${GLUSTERDIR}" 2> /dev/null
     if [ ${?} -ne 0 ];
     then
         mkdir "${GLUSTERDIR}"
