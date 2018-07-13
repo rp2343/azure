@@ -253,9 +253,9 @@ install_glusterfs_centos() {
     echo "installing gluster"
 #    wget --no-cache http://download.gluster.org/pub/gluster/glusterfs/LATEST/EPEL.repo/glusterfs-epel.repo
 #    mv glusterfs-epel.repo  /etc/yum.repos.d/
-#    yum -y update
-#    yum -y install centos-release-gluster
-    yum -y install glusterfs-geo-replication glusterfs-fuse glusterfs-server glusterfs
+    yum -y update
+    yum -y install centos-release-gluster312.noarch
+    yum -y install glusterfs-cli glusterfs-geo-replication glusterfs-fuse glusterfs-server glusterfs
 }
 
 configure_gluster() {
