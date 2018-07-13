@@ -87,7 +87,7 @@
     },
     "customScriptFilePath": {
       "type": "string",
-      "defaultValue": "https://raw.githubusercontent.com/rp2343/azure/master/azuregfs.sh",
+      "defaultValue": "https://raw.githubusercontent.com/rp2343/azure/master/mytemplates/gluster-fs/azuregfs.sh",
       "metadata": {
         "description": "GitHub location of the custom script that configures Gluster"
       }
